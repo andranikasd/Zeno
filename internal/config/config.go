@@ -9,9 +9,12 @@ type Config struct {
 	AWSSecretAccessKey string `mapstructure:"aws_secret_access_key"`
 	S3Bucket           string `mapstructure:"s3_bucket"`
 	S3Region           string `mapstructure:"s3_region"`
+	S3Prefix           string `mapstructure:"s3_prefix"`
+	CachePath          string `mapstructure:"cache_path"`
 	DuckDBPath         string `mapstructure:"duckdb_path"`
 	ServerAddr         string `mapstructure:"server_addr"`
 }
+
 
 func LoadConfig() (*Config, error) {
 	viper.SetConfigFile("config.yaml")
