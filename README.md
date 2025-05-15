@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/zeno-logo.png" alt="Zeno logo" width="200"/>
+</p>
+
 # Zeno
 **Zeno** is a modern, lightweight, open-source AWS Cost Analytics engine built with Go and designed for seamless Grafana integration🔥
 
