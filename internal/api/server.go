@@ -19,10 +19,10 @@ func StartServer(cfg *config.Config, db *sql.DB) error {
 		to := c.Query("to")
 		service := c.Query("service")
 		return c.JSON(fiber.Map{
-			"from": from,
-			"to": to,
+			"from":    from,
+			"to":      to,
 			"service": service,
-			"cost": 123.45, // Stub
+			"cost":    123.45,
 		})
 	})
 

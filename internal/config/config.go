@@ -15,7 +15,6 @@ type Config struct {
 	ServerAddr         string `mapstructure:"server_addr"`
 }
 
-
 func LoadConfig() (*Config, error) {
 	viper.SetConfigFile("config.yaml")
 	viper.AutomaticEnv()
