@@ -1,0 +1,6 @@
+aws:
+  region: eu-west-2
+  auth:
+    - type: profile
+      path: ~/.aws/credentials
+      profile: staging

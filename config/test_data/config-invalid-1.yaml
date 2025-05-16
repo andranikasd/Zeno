@@ -1,0 +1,5 @@
+aws:
+  auth:
+    - type: credentials
+      accessKeyID: MISSING_REGION
+      secretKey: KEY
