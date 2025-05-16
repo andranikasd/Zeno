@@ -2,5 +2,9 @@ aws:
   region: us-east-1
   auth:
     - type: credentials
-      accessKeyID: AKIAFOO
-      secretKey: SECRETFOO
+      accessKeyID: AKIAEXAMPLE
+      secretKey: SECRETEXAMPLE
+cur:
+  bucket: my-cur-bucket
+  prefix: reports/daily
+  schedule: "0 6 * * *"    # every day at 06:00 UTC

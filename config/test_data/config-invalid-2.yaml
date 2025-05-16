@@ -1,5 +1,9 @@
 aws:
-  region: us-west-2
+  region: us-east-1
   auth:
     - type: credentials
-      accessKeyID: ONLY_KEY
+      accessKeyID: AKIA123
+      secretKey: SECRET123
+cur:
+  bucket: my-bucket
+  schedule: "0 0 * * *"

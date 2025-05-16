@@ -1,5 +1,9 @@
 aws:
+  region: us-east-1
   auth:
     - type: credentials
-      accessKeyID: MISSING_REGION
-      secretKey: KEY
+      accessKeyID: AKIA123
+      secretKey: SECRET123
+cur:
+  prefix: reports/
+  schedule: "0 0 * * *"

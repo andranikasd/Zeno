@@ -24,6 +24,7 @@ import (
 // Config models the top-level YAML configuration for Zeno.
 type Config struct {
 	AWS AWSConfig `yaml:"aws"`
+	CUR CURConfig  `yaml:"cur"`
 }
 
 // AWSConfig specifies AWS settings, including region and auth methods.
@@ -41,6 +42,14 @@ type AuthMethod struct {
 	ProfilePath  string `yaml:"path,omitempty"`
 	ProfileName  string `yaml:"profile,omitempty"`
 	RoleToAssume string `yaml:"role-to-assume,omitempty"`
+}
+
+// CURConfig specifies Cost & Usage Report settings.
+type CURConfig struct {
+	Bucket   string `yaml:"bucket"`   // S3 bucket storing CUR files
+	Prefix   string `yaml:"prefix"`   // S3 key prefix for CUR objects
+	Region   string `yaml:"region"`   // optional override for bucket region
+	Schedule string `yaml:"schedule"` // cron schedule for daily ingestion
 }
 
 // LoadFile reads and parses the YAML configuration at path.
@@ -75,6 +84,18 @@ func Load(data []byte, logger *slog.Logger) (*Config, error) {
 		return nil, fmt.Errorf("config.aws.auth must have at least one method")
 	}
 
+	// Validate CUR section
+	if cfg.CUR.Bucket == "" {
+		return nil, fmt.Errorf("config.cur.bucket is required")
+	}
+	if cfg.CUR.Prefix == "" {
+		return nil, fmt.Errorf("config.cur.prefix is required")
+	}
+	if cfg.CUR.Schedule == "" {
+		return nil, fmt.Errorf("config.cur.schedule is required")
+	}
+
+
 	for i, m := range cfg.AWS.Auth {
 		switch m.Type {
 		case "credentials":
@@ -100,6 +121,13 @@ func Load(data []byte, logger *slog.Logger) (*Config, error) {
 	logger.Info("config loaded",
 		"region", cfg.AWS.Region,
 		"methods", len(cfg.AWS.Auth),
+	)
+
+	logger.Info("config loaded",
+		"aws_region", cfg.AWS.Region,
+		"auth_methods", len(cfg.AWS.Auth),
+		"cur_bucket", cfg.CUR.Bucket,
+		"cur_prefix", cfg.CUR.Prefix,
 	)
 
 	return &cfg, nil

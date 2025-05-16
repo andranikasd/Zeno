@@ -1,4 +1,9 @@
 aws:
-  region: us-west-2
+  region: us-east-1
   auth:
-    - type: foobar
+    - type: credentials
+      accessKeyID: AKIA123
+      secretKey: SECRET123
+cur:
+  bucket: my-bucket
+  prefix: reports/
