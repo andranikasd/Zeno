@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 )
@@ -46,10 +47,11 @@ type AuthMethod struct {
 
 // CURConfig specifies Cost & Usage Report settings.
 type CURConfig struct {
-	Bucket   string `yaml:"bucket"`   // S3 bucket storing CUR files
-	Prefix   string `yaml:"prefix"`   // S3 key prefix for CUR objects
-	Region   string `yaml:"region"`   // optional override for bucket region
-	Schedule string `yaml:"schedule"` // cron schedule for daily ingestion
+    Bucket   string `yaml:"bucket"`             // S3 bucket name
+    Prefix   string `yaml:"prefix"`             // S3 key prefix
+    Region   string `yaml:"region"`             // optional S3 region override
+    Schedule string `yaml:"schedule"`           // cron for ingest
+    Format   string `yaml:"format,omitempty"`   // "csv" or "parquet"
 }
 
 // LoadFile reads and parses the YAML configuration at path.
@@ -94,7 +96,16 @@ func Load(data []byte, logger *slog.Logger) (*Config, error) {
 	if cfg.CUR.Schedule == "" {
 		return nil, fmt.Errorf("config.cur.schedule is required")
 	}
-
+	format := strings.ToLower(cfg.CUR.Format)
+	if format == "" {
+			format = "csv"
+	}
+	switch format {
+	case "csv", "parquet":
+			cfg.CUR.Format = format
+	default:
+			return nil, fmt.Errorf("config.cur.format must be either \"csv\" or \"parquet\", got %q", cfg.CUR.Format)
+	}
 
 	for i, m := range cfg.AWS.Auth {
 		switch m.Type {

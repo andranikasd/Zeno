@@ -21,7 +21,7 @@ import (
 
 	"log/slog"
 
-	"github.com/andranikasd/Zeno/config"
+	"github.com/andranikasd/Zeno/internal/config"
 )
 
 // testLogger discards log output during auth tests.

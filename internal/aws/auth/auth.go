@@ -23,7 +23,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sts"
 
-	"github.com/andranikasd/Zeno/config"
+	"github.com/andranikasd/Zeno/internal/config"
 )
 
 // NewSession establishes an AWS session using the first valid method in cfg.Auth.
