@@ -3,60 +3,69 @@
 </p>
 
 # Zeno
-**Zeno** is a modern, lightweight, open-source AWS Cost Analytics engine built with Go and designed for seamless Grafana integration🔥
 
-## 🧠 The Problem: What are we trying to solve?
-
-### ❓ TL;DR
-> **“Understanding and predicting AWS cloud costs is hard, fragmented, and opaque — especially at scale.”**
+**Zeno** is a Go-based AWS Cost & Usage Report (CUR) ingestion and analytics engine, optimized for Prometheus metrics and Grafana visualization. It provides a programmable, extensible foundation for cost monitoring, attribution, and forecasting.
 
 ---
 
-## 🧩 The Real-World Problems
+## 🔍 Key Challenges
 
-### 💸 1. **AWS billing is complex and hard to interpret**
-- CUR contains **millions of line items**, often deeply nested
-- Default tools (Billing Console, Cost Explorer) are **slow, limited, or too high-level**
-- Difficult to **attribute costs by team, tag, environment**, etc.
-
----
-
-### 🧺 2. **Third-party tools are either closed-source, expensive, or bloated**
-- CloudHealth, CloudCheckr, or even native AWS tools cost $$$
-- Netflix Ice is dead and outdated
-- Kubecost only helps for Kubernetes
-- **FinOps teams often build DIY spreadsheets**
+1. **High-Volume, High-Detail Data**: AWS CUR exports produce millions of records daily, requiring efficient ingestion, transformation, and storage.
+2. **Granular Attribution**: Teams need to slice costs by service, account, region, tags, and custom dimensions.
+3. **Metric Export**: Integrating billing data into existing observability stacks (e.g., Prometheus/Grafana) demands a compatible exporter.
+4. **Predictive Insights**: Forecasting cost trends is critical for budgeting and anomaly detection.
 
 ---
 
-### 🔍 3. **Visibility and accountability are missing**
-- Engineers don’t see what they spend
-- Finance doesn’t understand usage
-- **Nobody owns waste**
+## 🛠 Technical Overview
+
+* **Config-Driven**: Centralized YAML configuration supports AWS credentials (static, profile, IAM role) and CUR parameters (S3 bucket, prefix, schedule, format).
+* **Pluggable AWS Auth**: Sequential fallback between static creds, shared profiles, and STS-based role assumption.
+* **CUR Fetcher**: Lists, downloads, and decompresses CUR files from S3, with CSV and Parquet support.
+* **Storage Abstraction**: Ingested data can be persisted into DuckDB (or any database adapter) via an internal store package.
+* **Prometheus Exporter**: Exposes cost metrics (`zeno_daily_cost{service,account,region}`) on `/metrics` for seamless scraping.
+* **Test Coverage**: Comprehensive unit tests for configuration, AWS auth flows, and CUR fetch logic.
+* **CI/CD**: GitHub Actions pipeline handling linting (`go fmt`, `go vet`, `golangci-lint`), secret scanning, auto-generated Go docs, and build artifacts.
 
 ---
 
-### 🔮 4. **Forecasting is an afterthought**
-- No clear trends, budgets, or future projections
-- Budgets are usually **reactive**, not predictive
-- Forecasting tools don’t integrate easily with dashboards
+## 📂 Repository Structure
+
+```
+├── cmd/zeno         # CLI / HTTP server entrypoint
+├── internal
+│   ├── config       # YAML schema, loader, validation, tests
+│   ├── aws
+│   │   ├── auth      # AWS session builder, STS role, tests
+│   │   └── cur       # CUR S3 client, downloader, tests
+│   ├── ingest       # Ingestion pipeline: S3 → DuckDB
+│   └── store        # DuckDB migrations, upserts, queries
+├── assets           # Logo and diagrams
+├── docker           # Dockerfile and build context
+├── Makefile         # Lint, test, build, container targets
+└── .github/workflows/ci.yml  # CI/CD pipeline
+```
 
 ---
 
-## 🧠 The Zeno Opportunity
+## ⚡️ Quick Start
 
-**Zeno** solves this by offering:
-
-| Problem                            | Zeno's Solution                        |
-|------------------------------------|----------------------------------------|
-| CUR is complex                     | Ingests, flattens, and interprets CURs |
-| No single-pane visibility          | Exposes a clean API + Grafana plugin   |
-| No fine-grained attribution        | Supports filters: tags, services, teams|
-| No budget forecasting              | Predictive models coming soon 🔮       |
-| Cloud cost tools are $$$/closed    | Zeno is open-source and self-hosted    |
+1. **Configure** your `config.yaml` (see `config/test_data` for examples).
+2. **Build** the binary:  `make build`
+3. **Run** the server:  `./bin/zeno --config config.yaml`
+4. **Scrape** metrics: visit `http://localhost:8080/metrics` in Prometheus.
 
 ---
 
-## 📣 Elevator Pitch
+## 🚀 Roadmap
 
-> **Zeno** is a lightweight, open-source platform that ingests AWS billing data (CUR), transforms it into clean, filterable insights, and visualizes it through Grafana — giving engineers and finance teams the clarity, control, and cost a
+* **Forecast Engine**: Time-series models for spend prediction.
+* **Grafana Plugin**: Custom datasource for ad-hoc queries.
+* **Tag-Aware Ingestion**: Automated cost allocation based on resource tags.
+* **High-Availability**: Kubernetes operator and Helm charts.
+
+---
+
+## 📜 License
+
+Apache License 2.0 © 2025 Zeno Authors
